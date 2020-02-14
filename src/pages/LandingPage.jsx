@@ -61,7 +61,7 @@ export default function LandingPage() {
         setUserEstimatedYearlyIncomeErrorText('');
         setUserEstimatedCreditScoreErrorText('');
 
-        console.log(autoPurchasePriceValue);
+        console.log(userEstimatedYearlyIncomeValue);
 
         if (!autoPurchasePriceValue) {
             errorFound = true;
@@ -75,32 +75,26 @@ export default function LandingPage() {
 
         if (!autoModelValue) {
             errorFound = true;
-            setAutoModelValue('Field must have a value.');
+            setAutoModelErrorText('Field must have a value.');
         }
 
         if (!userEstimatedYearlyIncomeValue) {
             errorFound = true;
-            setUserEstimatedYearlyIncomeValue('Field must have a value.');
+            setUserEstimatedYearlyIncomeErrorText('Field must have a value.');
         }
 
         if (!userEstimatedCreditScoreValue) {
             errorFound = true;
-            setUserEstimatedCreditScoreValue('Field must have a value.');
-        } else if (parseInt(userEstimatedCreditScoreValue) <= 300 || parseInt(userEstimatedCreditScoreValue) >= 850) {
+            setUserEstimatedCreditScoreErrorText('Field must have a value.');
+        } else if (parseInt(userEstimatedCreditScoreValue) < 300 || parseInt(userEstimatedCreditScoreValue) > 850) {
             errorFound = true;
-            setUserEstimatedCreditScoreValue('Credit score must be between 300 and 850.');
+            setUserEstimatedCreditScoreErrorText('Credit score must be between 300 and 850.');
         }
 
         // If no errors were found, continue the form submission.
         if (!errorFound) {
 
-
-
         }
-
-
-
-
     }
 
     return (
