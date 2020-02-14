@@ -13,6 +13,7 @@ import DirectionsCarIcon from '@material-ui/icons/DirectionsCar';
 import {makeStyles} from '@material-ui/core/styles';
 import Helmet from "react-helmet";
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
+import {apiBackendMockCall} from '../utils/api';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -49,8 +50,7 @@ export default function LandingPage() {
 
     const classes = useStyles();
 
-    function handleFormSubmit(event) {
-
+    const handleFormSubmit = async (event) => {
         event.preventDefault();
 
         let errorFound = false;
@@ -61,7 +61,6 @@ export default function LandingPage() {
         setUserEstimatedYearlyIncomeErrorText('');
         setUserEstimatedCreditScoreErrorText('');
 
-        console.log(userEstimatedYearlyIncomeValue);
 
         if (!autoPurchasePriceValue) {
             errorFound = true;
@@ -93,9 +92,20 @@ export default function LandingPage() {
 
         // If no errors were found, continue the form submission.
         if (!errorFound) {
+            // Simulate API call.
+            const response = await apiBackendMockCall(autoPurchasePriceValue, autoMakeValue, autoModelValue, userEstimatedYearlyIncomeValue, userEstimatedCreditScoreValue)
 
+            if (response.status === 200) {
+
+                // Send user to new account page.
+
+            } else if (response.status === 400) {
+
+                // Send user to disqualification page with statusText.
+
+            }
         }
-    }
+    };
 
     return (
         <Container component="main" maxWidth="xs">
