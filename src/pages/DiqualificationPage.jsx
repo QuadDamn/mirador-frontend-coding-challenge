@@ -32,14 +32,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DisqualificationPage() {
-
     let location = useLocation();
     const classes = useStyles();
 
     return (
         <Container component="main" maxWidth="xs">
             <Helmet>
-                <title>Qualification Form for Auto Loan</title>
+                <title>Auto Loan Not Approved</title>
             </Helmet>
 
             <CssBaseline/>
