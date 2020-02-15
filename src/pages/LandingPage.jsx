@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Redirect} from 'react-router-dom';
 import {
     Button,
     TextField,
@@ -23,7 +24,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
     },
     avatar: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(3),
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
@@ -48,6 +49,12 @@ export default function LandingPage() {
     const [userEstimatedYearlyIncomeErrorText, setUserEstimatedYearlyIncomeErrorText] = useState('');
     const [userEstimatedCreditScoreErrorText, setUserEstimatedCreditScoreErrorText] = useState('');
 
+    const [submitButtonText, setSubmitButtonText] = useState();
+    const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
+
+    const [apiResponse, setApiResponse] = useState();
+    const [redirect, setRedirect] = useState(false);
+
     const classes = useStyles();
 
     const handleFormSubmit = async (event) => {
@@ -55,12 +62,14 @@ export default function LandingPage() {
 
         let errorFound = false;
 
+        setSubmitButtonText('Processing...');
+        setSubmitButtonDisabled(true);
+
         setAutoPurchasePriceErrorText('');
         setAutoMakeErrorText('');
         setAutoModelErrorText('');
         setUserEstimatedYearlyIncomeErrorText('');
         setUserEstimatedCreditScoreErrorText('');
-
 
         if (!autoPurchasePriceValue) {
             errorFound = true;
@@ -95,141 +104,150 @@ export default function LandingPage() {
             // Simulate API call.
             const response = await apiBackendMockCall(autoPurchasePriceValue, autoMakeValue, autoModelValue, userEstimatedYearlyIncomeValue, userEstimatedCreditScoreValue)
 
-            if (response.status === 200) {
-
-                // Send user to new account page.
-
-            } else if (response.status === 400) {
-
-                // Send user to disqualification page with statusText.
-
-            }
+            setApiResponse(response);
+            setRedirect(response.status === 200 ? "/new-account" : "/disqualified");
+        } else {
+            // Set the Submit Button back to its default state so the user can submit again after correcting the errors.
+            setSubmitButtonDisabled(false);
+            setSubmitButtonText('');
         }
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Helmet>
-                <title>Qualification Form for Auto Loan</title>
-            </Helmet>
+        <div>
+            {redirect ? <Redirect to={{
+                pathname: redirect,
+                state: {statusText: apiResponse.statusText}
+            }}
+            /> : ''}
 
-            <CssBaseline/>
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <DirectionsCarIcon/>
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Qualification Form for Auto Loan
-                </Typography>
-                <form className={classes.form} onSubmit={(event) => handleFormSubmit(event)}>
+            <Container component="main" maxWidth="xs">
+                <Helmet>
+                    <title>Qualification Form for Auto Loan</title>
+                </Helmet>
 
-                    <CurrencyTextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        id="auto-purchase-price"
-                        label="Auto Purchase Price"
-                        name="auto-purchase-price"
-                        textAlign="left"
-                        value={autoPurchasePriceValue}
-                        onChange={(event, value) => setAutoPurchasePriceValue(value)}
-                        helperText={autoPurchasePriceErrorText}
-                        error={!!autoPurchasePriceErrorText}
-                    />
+                <CssBaseline/>
+                <div className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <DirectionsCarIcon/>
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Qualification Form for Auto Loan
+                    </Typography>
+                    <form className={classes.form} onSubmit={(event) => handleFormSubmit(event)}>
 
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        id="auto-make"
-                        label="Auto Make"
-                        name="auto-make"
-                        value={autoMakeValue}
-                        onChange={(event) => setAutoMakeValue(event.target.value)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start"/>
-                            )
-                        }}
-                        helperText={autoMakeErrorText}
-                        error={!!autoMakeErrorText}
-                    />
+                        <CurrencyTextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            id="auto-purchase-price"
+                            label="Auto Purchase Price"
+                            name="auto-purchase-price"
+                            textAlign="left"
+                            value={autoPurchasePriceValue}
+                            onChange={(event, value) => setAutoPurchasePriceValue(value)}
+                            helperText={autoPurchasePriceErrorText}
+                            error={!!autoPurchasePriceErrorText}
+                        />
 
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        id="auto-model"
-                        label="Auto Model"
-                        name="auto-model"
-                        value={autoModelValue}
-                        onChange={(event) => setAutoModelValue(event.target.value)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start"/>
-                            )
-                        }}
-                        helperText={autoModelErrorText}
-                        error={!!autoModelErrorText}
-                    />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            id="auto-make"
+                            label="Auto Make"
+                            name="auto-make"
+                            value={autoMakeValue}
+                            onChange={(event) => setAutoMakeValue(event.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start"/>
+                                )
+                            }}
+                            helperText={autoMakeErrorText}
+                            error={!!autoMakeErrorText}
+                        />
 
-                    <CurrencyTextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        id="user-estimated-yearly-income"
-                        label="User Estimated Yearly Income"
-                        name="user-estimated-yearly-income"
-                        textAlign="left"
-                        value={userEstimatedYearlyIncomeValue}
-                        onChange={(event, value) => setUserEstimatedYearlyIncomeValue(value)}
-                        helperText={userEstimatedYearlyIncomeErrorText}
-                        error={!!userEstimatedYearlyIncomeErrorText}
-                    />
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            id="auto-model"
+                            label="Auto Model"
+                            name="auto-model"
+                            value={autoModelValue}
+                            onChange={(event) => setAutoModelValue(event.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start"/>
+                                )
+                            }}
+                            helperText={autoModelErrorText}
+                            error={!!autoModelErrorText}
+                        />
 
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        fullWidth
-                        name="user-estimated-credit-score"
-                        label="User Estimated Credit Score"
-                        id="user-estimated-credit-score"
-                        value={userEstimatedCreditScoreValue}
-                        onChange={(event) => setUserEstimatedCreditScoreValue(event.target.value)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start"/>
-                            )
-                        }}
-                        helperText={userEstimatedCreditScoreErrorText}
-                        error={!!userEstimatedCreditScoreErrorText}
-                    />
+                        <CurrencyTextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            id="user-estimated-yearly-income"
+                            label="User Estimated Yearly Income"
+                            name="user-estimated-yearly-income"
+                            textAlign="left"
+                            value={userEstimatedYearlyIncomeValue}
+                            onChange={(event, value) => setUserEstimatedYearlyIncomeValue(value)}
+                            helperText={userEstimatedYearlyIncomeErrorText}
+                            error={!!userEstimatedYearlyIncomeErrorText}
+                        />
 
-                    <Grid container>
-                        <Grid item xs>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed placerat ante id elit cursus, a
-                            interdum nunc venenatis.
-                            Cras nulla nibh, euismod non turpis a, ullamcorper feugiat leo. Pellentesque elementum
-                            sapien tellus, quis blandit
-                            tortor malesuada eget. Integer vel neque in dolor euismod fermentum et a nulla. Pellentesque
-                            ultricies est
-                            dignissim malesuada aliquet. Nullam non ornare nibh. Orci varius natoque penatibus et magnis
-                            dis parturient montes,
-                            nascetur ridiculus mus.
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            name="user-estimated-credit-score"
+                            label="User Estimated Credit Score"
+                            id="user-estimated-credit-score"
+                            value={userEstimatedCreditScoreValue}
+                            onChange={(event) => setUserEstimatedCreditScoreValue(event.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start"/>
+                                )
+                            }}
+                            helperText={userEstimatedCreditScoreErrorText}
+                            error={!!userEstimatedCreditScoreErrorText}
+                        />
+
+                        <Grid container>
+                            <Grid item xs>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed placerat ante id elit
+                                cursus, a
+                                interdum nunc venenatis.
+                                Cras nulla nibh, euismod non turpis a, ullamcorper feugiat leo. Pellentesque elementum
+                                sapien tellus, quis blandit
+                                tortor malesuada eget. Integer vel neque in dolor euismod fermentum et a nulla.
+                                Pellentesque
+                                ultricies est
+                                dignissim malesuada aliquet. Nullam non ornare nibh. Orci varius natoque penatibus et
+                                magnis
+                                dis parturient montes,
+                                nascetur ridiculus mus.
+                            </Grid>
                         </Grid>
-                    </Grid>
 
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Submit Application
-                    </Button>
-                </form>
-            </div>
-        </Container>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            disabled={submitButtonDisabled}
+                        >
+                            {submitButtonText ? submitButtonText : "Submit Application"}
+                        </Button>
+                    </form>
+                </div>
+            </Container>
+        </div>
     );
 }
