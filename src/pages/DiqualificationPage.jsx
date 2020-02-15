@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DisqualificationPage() {
-    let location = useLocation();
+    const location = useLocation();
     const classes = useStyles();
 
     return (
