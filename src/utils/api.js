@@ -1,5 +1,14 @@
 const apiBackendMockCall = (autoPurchasePrice, autoMake, autoModel, userEstimatedYearlyIncome, userEstimatedCreditScore) => {
     return new Promise((res, rej) => {
+        // In an actual backend, we would be doing validation to ensure that the inputs we need are there.
+        // Enforcing the contract, so to speak.  This is just a lazy error handling implementation.
+        if (!autoPurchasePrice || !autoMake || !autoModel || userEstimatedYearlyIncome || userEstimatedCreditScore) {
+            rej({
+                status: 400, // Could potentially be a 500 status code as well.  Just depends on how the team is handling the response matrix.
+                statusText: 'Invalid submission.'
+            })
+        }
+
         if (parseInt(autoPurchasePrice) > 1000000) {
             res({
                 status: 400,
