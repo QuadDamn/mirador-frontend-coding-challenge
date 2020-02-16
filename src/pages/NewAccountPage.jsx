@@ -1,15 +1,14 @@
 import React, {useState} from 'react';
-import {useLocation} from 'react-router-dom';
 import {
     Button,
     TextField,
     CssBaseline,
-    Grid,
     Typography,
     Container,
     Avatar,
-    InputAdornment
+    InputAdornment,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import DirectionsCarIcon from '@material-ui/icons/DirectionsCar';
 import {makeStyles} from '@material-ui/core/styles';
 import Helmet from "react-helmet";
@@ -35,8 +34,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LandingPage() {
-    const location = useLocation();
-
     const [usernameValue, setUsernameValue] = useState();
     const [passwordValue, setPasswordValue] = useState();
     const [passwordConfirmValue, setPasswordConfirmValue] = useState();
@@ -48,6 +45,8 @@ export default function LandingPage() {
     const [submitButtonText, setSubmitButtonText] = useState();
     const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
 
+    const [accountCreated, setAccountCreated] = useState(false);
+
     const classes = useStyles();
 
     const handleFormSubmit = async (event) => {
@@ -57,6 +56,7 @@ export default function LandingPage() {
 
         setSubmitButtonText('Processing...');
         setSubmitButtonDisabled(true);
+        setAccountCreated(false);
 
         setUsernameErrorText('');
         setPasswordErrorText('');
@@ -64,11 +64,6 @@ export default function LandingPage() {
 
         setSubmitButtonText('');
         setSubmitButtonDisabled('');
-
-        if (!usernameValue) {
-            errorFound = true;
-            setUsernameErrorText('Field must have a value.');
-        }
 
         if (!passwordValue) {
             errorFound = true;
@@ -80,21 +75,38 @@ export default function LandingPage() {
             setPasswordConfirmErrorText('Field must have a value.');
         }
 
-        // Validate email
+        // Validate email -- based on simplier use case (https://flaviocopes.com/how-to-validate-email-address-javascript/)
+        const regex = RegExp(/\S+@\S+/);
+
+        if (!regex.test(String(usernameValue).toLowerCase())) {
+            errorFound = true;
+            setUsernameErrorText('Please enter valid e-mail address.');
+        }
 
         // Validate the passwords match.
-
+        if (passwordValue !== passwordConfirmValue) {
+            errorFound = true;
+            setPasswordErrorText('Passwords must match.');
+            setPasswordConfirmErrorText('Passwords must match');
+        }
         // Validate password (more than 8 characters and a number or special character)
-
-
-
+        else if (passwordValue && !passwordValue.match('^.*(?=.{8,})(?=.*[!@#$%^&*_0-9]).*$')) {
+            errorFound = true;
+            setPasswordErrorText('Password must be 8 characters in length and have at least one number or special character.')
+        }
 
         // If no errors were found, continue the form submission.
         if (!errorFound) {
-
-            // Throw an alert letting the user know the account was successfully created.
+            // Throw an alert toast letting the user know the account was successfully created.
             // There is no requirements around this, so just keeping it simple.
+            setAccountCreated(true);
 
+            // Resetting input state after successful account creation.
+            setUsernameValue('');
+            setPasswordValue('');
+            setPasswordConfirmValue('');
+            setSubmitButtonDisabled(false);
+            setSubmitButtonText('');
         } else {
             // Set the Submit Button back to its default state so the user can submit again after correcting the errors.
             setSubmitButtonDisabled(false);
@@ -185,6 +197,8 @@ export default function LandingPage() {
                     </Button>
                 </form>
             </div>
+
+            { accountCreated ? <Alert severity="success">Account successfully created!</Alert> : <div/>}
         </Container>
     );
 }

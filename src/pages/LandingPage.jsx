@@ -221,17 +221,11 @@ export default function LandingPage() {
                         <Grid container>
                             <Grid item xs>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed placerat ante id elit
-                                cursus, a
-                                interdum nunc venenatis.
-                                Cras nulla nibh, euismod non turpis a, ullamcorper feugiat leo. Pellentesque elementum
-                                sapien tellus, quis blandit
-                                tortor malesuada eget. Integer vel neque in dolor euismod fermentum et a nulla.
-                                Pellentesque
-                                ultricies est
+                                cursus, a interdum nunc venenatis. Cras nulla nibh, euismod non turpis a, ullamcorper f
+                                eugiat leo. Pellentesque elementum sapien tellus, quis blandit tortor malesuada eget.
+                                Integer vel neque in dolor euismod fermentum et a nulla. Pellentesque ultricies est
                                 dignissim malesuada aliquet. Nullam non ornare nibh. Orci varius natoque penatibus et
-                                magnis
-                                dis parturient montes,
-                                nascetur ridiculus mus.
+                                magnis dis parturient montes, nascetur ridiculus mus.
                             </Grid>
                         </Grid>
 
