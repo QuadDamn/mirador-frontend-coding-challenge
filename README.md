@@ -7,6 +7,7 @@ My submission for the Mirador FE React coding challenge.
 Clone down the repository and run the following commands in order:
 
 `npm install` -- Install of the project dependencies
+
 `npm start` -- Spins up a local development instance of the application.
 
 Please note that there are some warnings in the console.  Those are around Material UI and the currency text field package that I had installed.
