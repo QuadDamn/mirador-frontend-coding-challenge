@@ -117,8 +117,6 @@ export default function LandingPage() {
 
     // If no errors were found, continue the form submission.
     if (!errorFound) {
-      console.log(fields);
-
       // Simulate API call.
       const response = await apiBackendMockCall(
         fields.autoPurchasePrice,
