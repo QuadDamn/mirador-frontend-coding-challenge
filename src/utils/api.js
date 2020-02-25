@@ -12,10 +12,10 @@ const apiBackendMockCall = (
       !autoPurchasePrice ||
       !autoMake ||
       !autoModel ||
-      userEstimatedYearlyIncome ||
-      userEstimatedCreditScore
+      !userEstimatedYearlyIncome ||
+      !userEstimatedCreditScore
     ) {
-      rej({
+      res({
         status: 400, // Could potentially be a 500 status code as well.  Just depends on how the team is handling the response matrix.
         statusText: 'Invalid submission.',
       });

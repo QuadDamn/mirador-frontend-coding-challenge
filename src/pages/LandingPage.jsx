@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Helmet from 'react-helmet';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import { apiBackendMockCall } from '../utils/api';
+import { useFormFields } from '../utils/customHooks';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -37,17 +38,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LandingPage() {
-  const [autoPurchasePriceValue, setAutoPurchasePriceValue] = useState();
-  const [autoMakeValue, setAutoMakeValue] = useState();
-  const [autoModelValue, setAutoModelValue] = useState();
-  const [
-    userEstimatedYearlyIncomeValue,
-    setUserEstimatedYearlyIncomeValue,
-  ] = useState();
-  const [
-    userEstimatedCreditScoreValue,
-    setUserEstimatedCreditScoreValue,
-  ] = useState();
+  const [fields, handleFieldChange] = useFormFields({
+    autoPurchasePrice: '',
+    autoMake: '',
+    autoModel: '',
+    userEstimatedYearlyIncome: '',
+    userEstimatedCreditScore: '',
+  });
 
   const [autoPurchasePriceErrorText, setAutoPurchasePriceErrorText] = useState(
     ''
@@ -85,32 +82,32 @@ export default function LandingPage() {
     setUserEstimatedYearlyIncomeErrorText('');
     setUserEstimatedCreditScoreErrorText('');
 
-    if (!autoPurchasePriceValue) {
+    if (!fields.autoPurchasePrice) {
       errorFound = true;
       setAutoPurchasePriceErrorText('Field must have a value.');
     }
 
-    if (!autoMakeValue) {
+    if (!fields.autoMake) {
       errorFound = true;
       setAutoMakeErrorText('Field must have a value.');
     }
 
-    if (!autoModelValue) {
+    if (!fields.autoModel) {
       errorFound = true;
       setAutoModelErrorText('Field must have a value.');
     }
 
-    if (!userEstimatedYearlyIncomeValue) {
+    if (!fields.userEstimatedYearlyIncome) {
       errorFound = true;
       setUserEstimatedYearlyIncomeErrorText('Field must have a value.');
     }
 
-    if (!userEstimatedCreditScoreValue) {
+    if (!fields.userEstimatedCreditScore) {
       errorFound = true;
       setUserEstimatedCreditScoreErrorText('Field must have a value.');
     } else if (
-      parseInt(userEstimatedCreditScoreValue) < 300 ||
-      parseInt(userEstimatedCreditScoreValue) > 850
+      parseInt(fields.userEstimatedCreditScore) < 300 ||
+      parseInt(fields.userEstimatedCreditScore) > 850
     ) {
       errorFound = true;
       setUserEstimatedCreditScoreErrorText(
@@ -120,13 +117,15 @@ export default function LandingPage() {
 
     // If no errors were found, continue the form submission.
     if (!errorFound) {
+      console.log(fields);
+
       // Simulate API call.
       const response = await apiBackendMockCall(
-        autoPurchasePriceValue,
-        autoMakeValue,
-        autoModelValue,
-        userEstimatedYearlyIncomeValue,
-        userEstimatedCreditScoreValue
+        fields.autoPurchasePrice,
+        fields.autoMake,
+        fields.autoModel,
+        fields.userEstimatedYearlyIncome,
+        fields.userEstimatedCreditScore
       );
 
       setApiResponse(response);
@@ -172,12 +171,12 @@ export default function LandingPage() {
               variant="outlined"
               margin="normal"
               fullWidth
-              id="auto-purchase-price"
+              id="autoPurchasePrice"
               label="Auto Purchase Price"
-              name="auto-purchase-price"
+              name="autoPurchasePrice"
               textAlign="left"
-              value={autoPurchasePriceValue}
-              onChange={(event, value) => setAutoPurchasePriceValue(value)}
+              value={fields.autoPurchasePrice}
+              onChange={handleFieldChange}
               helperText={autoPurchasePriceErrorText}
               error={!!autoPurchasePriceErrorText}
             />
@@ -186,11 +185,11 @@ export default function LandingPage() {
               variant="outlined"
               margin="normal"
               fullWidth
-              id="auto-make"
+              id="autoMake"
               label="Auto Make"
-              name="auto-make"
-              value={autoMakeValue}
-              onChange={event => setAutoMakeValue(event.target.value)}
+              name="autoMake"
+              value={fields.autoMake}
+              onChange={handleFieldChange}
               InputProps={{
                 startAdornment: <InputAdornment position="start" />,
               }}
@@ -202,11 +201,11 @@ export default function LandingPage() {
               variant="outlined"
               margin="normal"
               fullWidth
-              id="auto-model"
+              id="autoModel"
               label="Auto Model"
-              name="auto-model"
-              value={autoModelValue}
-              onChange={event => setAutoModelValue(event.target.value)}
+              name="autoModel"
+              value={fields.autoModel}
+              onChange={handleFieldChange}
               InputProps={{
                 startAdornment: <InputAdornment position="start" />,
               }}
@@ -218,14 +217,12 @@ export default function LandingPage() {
               variant="outlined"
               margin="normal"
               fullWidth
-              id="user-estimated-yearly-income"
+              id="userEstimatedYearlyIncome"
               label="User Estimated Yearly Income"
-              name="user-estimated-yearly-income"
+              name="userEstimatedYearlyIncome"
               textAlign="left"
-              value={userEstimatedYearlyIncomeValue}
-              onChange={(event, value) =>
-                setUserEstimatedYearlyIncomeValue(value)
-              }
+              value={fields.userEstimatedYearlyIncome}
+              onChange={handleFieldChange}
               helperText={userEstimatedYearlyIncomeErrorText}
               error={!!userEstimatedYearlyIncomeErrorText}
             />
@@ -234,13 +231,11 @@ export default function LandingPage() {
               variant="outlined"
               margin="normal"
               fullWidth
-              name="user-estimated-credit-score"
+              name="userEstimatedCreditScore"
               label="User Estimated Credit Score"
-              id="user-estimated-credit-score"
-              value={userEstimatedCreditScoreValue}
-              onChange={event =>
-                setUserEstimatedCreditScoreValue(event.target.value)
-              }
+              id="userEstimatedCreditScore"
+              value={fields.userEstimatedCreditScore}
+              onChange={handleFieldChange}
               InputProps={{
                 startAdornment: <InputAdornment position="start" />,
               }}
